@@ -39,471 +39,470 @@ export type Database = {
   }
   public: {
     Tables: {
-      categorias: {
+      accounts: {
         Row: {
-          activa: boolean
+          annual_rate: number
+          created_at: string
+          credit_limit_cents: number | null
+          currency: string
+          holder: string | null
+          household_id: string
+          id: string
+          institution: string | null
+          is_active: boolean
+          name: string
+          overlimit_cents: number
+          payment_due_day: number | null
+          statement_day: number | null
+          type: Database["public"]["Enums"]["account_type"]
+        }
+        Insert: {
+          annual_rate?: number
+          created_at?: string
+          credit_limit_cents?: number | null
+          currency?: string
+          holder?: string | null
+          household_id: string
+          id?: string
+          institution?: string | null
+          is_active?: boolean
+          name: string
+          overlimit_cents?: number
+          payment_due_day?: number | null
+          statement_day?: number | null
+          type: Database["public"]["Enums"]["account_type"]
+        }
+        Update: {
+          annual_rate?: number
+          created_at?: string
+          credit_limit_cents?: number | null
+          currency?: string
+          holder?: string | null
+          household_id?: string
+          id?: string
+          institution?: string | null
+          is_active?: boolean
+          name?: string
+          overlimit_cents?: number
+          payment_due_day?: number | null
+          statement_day?: number | null
+          type?: Database["public"]["Enums"]["account_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budgets: {
+        Row: {
+          amount_cents: number
+          category_id: string
+          created_at: string
+          household_id: string
+          id: string
+          month: string
+        }
+        Insert: {
+          amount_cents: number
+          category_id: string
+          created_at?: string
+          household_id: string
+          id?: string
+          month: string
+        }
+        Update: {
+          amount_cents?: number
+          category_id?: string
+          created_at?: string
+          household_id?: string
+          id?: string
+          month?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budgets_category_id_household_id_fkey"
+            columns: ["category_id", "household_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id", "household_id"]
+          },
+          {
+            foreignKeyName: "budgets_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
           color: string | null
           created_at: string
-          hogar_id: string
-          icono: string | null
+          household_id: string
+          icon: string | null
           id: string
-          nombre: string
-          tipo: Database["public"]["Enums"]["tipo_categoria"]
+          is_active: boolean
+          name: string
+          type: Database["public"]["Enums"]["category_type"]
         }
         Insert: {
-          activa?: boolean
           color?: string | null
           created_at?: string
-          hogar_id: string
-          icono?: string | null
+          household_id: string
+          icon?: string | null
           id?: string
-          nombre: string
-          tipo: Database["public"]["Enums"]["tipo_categoria"]
+          is_active?: boolean
+          name: string
+          type: Database["public"]["Enums"]["category_type"]
         }
         Update: {
-          activa?: boolean
           color?: string | null
           created_at?: string
-          hogar_id?: string
-          icono?: string | null
+          household_id?: string
+          icon?: string | null
           id?: string
-          nombre?: string
-          tipo?: Database["public"]["Enums"]["tipo_categoria"]
+          is_active?: boolean
+          name?: string
+          type?: Database["public"]["Enums"]["category_type"]
         }
         Relationships: [
           {
-            foreignKeyName: "categorias_hogar_id_fkey"
-            columns: ["hogar_id"]
+            foreignKeyName: "categories_household_id_fkey"
+            columns: ["household_id"]
             isOneToOne: false
-            referencedRelation: "hogares"
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
         ]
       }
-      cuentas: {
+      household_members: {
         Row: {
-          activa: boolean
           created_at: string
-          cupo_centavos: number | null
-          dia_corte: number | null
-          dia_pago: number | null
-          entidad: string | null
-          hogar_id: string
-          id: string
-          moneda: string
-          nombre: string
-          sobrecupo_centavos: number
-          tasa_anual: number
-          tipo: Database["public"]["Enums"]["tipo_cuenta"]
-          titular: string | null
+          household_id: string
+          role: Database["public"]["Enums"]["household_role"]
+          user_id: string
         }
         Insert: {
-          activa?: boolean
           created_at?: string
-          cupo_centavos?: number | null
-          dia_corte?: number | null
-          dia_pago?: number | null
-          entidad?: string | null
-          hogar_id: string
-          id?: string
-          moneda?: string
-          nombre: string
-          sobrecupo_centavos?: number
-          tasa_anual?: number
-          tipo: Database["public"]["Enums"]["tipo_cuenta"]
-          titular?: string | null
+          household_id: string
+          role?: Database["public"]["Enums"]["household_role"]
+          user_id: string
         }
         Update: {
-          activa?: boolean
           created_at?: string
-          cupo_centavos?: number | null
-          dia_corte?: number | null
-          dia_pago?: number | null
-          entidad?: string | null
-          hogar_id?: string
-          id?: string
-          moneda?: string
-          nombre?: string
-          sobrecupo_centavos?: number
-          tasa_anual?: number
-          tipo?: Database["public"]["Enums"]["tipo_cuenta"]
-          titular?: string | null
+          household_id?: string
+          role?: Database["public"]["Enums"]["household_role"]
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "cuentas_hogar_id_fkey"
-            columns: ["hogar_id"]
+            foreignKeyName: "household_members_household_id_fkey"
+            columns: ["household_id"]
             isOneToOne: false
-            referencedRelation: "hogares"
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
         ]
       }
-      diferidos: {
+      households: {
         Row: {
           created_at: string
-          cuenta_id: string
-          descripcion: string
-          fecha_inicio: string
-          hogar_id: string
+          created_by: string
           id: string
-          monto_centavos: number
-          numero_cuotas: number
-          tasa_anual: number
+          name: string
         }
         Insert: {
           created_at?: string
-          cuenta_id: string
-          descripcion: string
-          fecha_inicio: string
-          hogar_id: string
+          created_by: string
           id?: string
-          monto_centavos: number
-          numero_cuotas: number
-          tasa_anual?: number
+          name: string
         }
         Update: {
           created_at?: string
-          cuenta_id?: string
-          descripcion?: string
-          fecha_inicio?: string
-          hogar_id?: string
+          created_by?: string
           id?: string
-          monto_centavos?: number
-          numero_cuotas?: number
-          tasa_anual?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "diferidos_cuenta_id_hogar_id_fkey"
-            columns: ["cuenta_id", "hogar_id"]
-            isOneToOne: false
-            referencedRelation: "cuentas"
-            referencedColumns: ["id", "hogar_id"]
-          },
-          {
-            foreignKeyName: "diferidos_cuenta_id_hogar_id_fkey"
-            columns: ["cuenta_id", "hogar_id"]
-            isOneToOne: false
-            referencedRelation: "v_saldos_cuentas"
-            referencedColumns: ["cuenta_id", "hogar_id"]
-          },
-          {
-            foreignKeyName: "diferidos_hogar_id_fkey"
-            columns: ["hogar_id"]
-            isOneToOne: false
-            referencedRelation: "hogares"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      hogares: {
-        Row: {
-          creado_por: string
-          created_at: string
-          id: string
-          nombre: string
-        }
-        Insert: {
-          creado_por: string
-          created_at?: string
-          id?: string
-          nombre: string
-        }
-        Update: {
-          creado_por?: string
-          created_at?: string
-          id?: string
-          nombre?: string
+          name?: string
         }
         Relationships: []
       }
-      miembros_hogar: {
+      installment_plans: {
         Row: {
+          account_id: string
+          amount_cents: number
+          annual_rate: number
           created_at: string
-          hogar_id: string
-          rol: Database["public"]["Enums"]["rol_hogar"]
-          usuario_id: string
+          description: string
+          household_id: string
+          id: string
+          installment_count: number
+          start_date: string
         }
         Insert: {
+          account_id: string
+          amount_cents: number
+          annual_rate?: number
           created_at?: string
-          hogar_id: string
-          rol?: Database["public"]["Enums"]["rol_hogar"]
-          usuario_id: string
+          description: string
+          household_id: string
+          id?: string
+          installment_count: number
+          start_date: string
         }
         Update: {
+          account_id?: string
+          amount_cents?: number
+          annual_rate?: number
           created_at?: string
-          hogar_id?: string
-          rol?: Database["public"]["Enums"]["rol_hogar"]
-          usuario_id?: string
+          description?: string
+          household_id?: string
+          id?: string
+          installment_count?: number
+          start_date?: string
         }
         Relationships: [
           {
-            foreignKeyName: "miembros_hogar_hogar_id_fkey"
-            columns: ["hogar_id"]
+            foreignKeyName: "installment_plans_account_id_household_id_fkey"
+            columns: ["account_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "hogares"
+            referencedRelation: "accounts"
+            referencedColumns: ["id", "household_id"]
+          },
+          {
+            foreignKeyName: "installment_plans_account_id_household_id_fkey"
+            columns: ["account_id", "household_id"]
+            isOneToOne: false
+            referencedRelation: "v_account_balances"
+            referencedColumns: ["account_id", "household_id"]
+          },
+          {
+            foreignKeyName: "installment_plans_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
         ]
       }
-      movimientos: {
+      transactions: {
         Row: {
-          categoria_id: string | null
-          creado_por: string | null
+          account_id: string
+          amount_cents: number
+          category_id: string | null
           created_at: string
-          cuenta_destino_id: string | null
-          cuenta_id: string
-          descripcion: string | null
-          diferido_id: string | null
-          fecha: string
-          hogar_id: string
+          created_by: string | null
+          description: string | null
+          destination_account_id: string | null
+          household_id: string
           id: string
-          monto_centavos: number
-          tipo: Database["public"]["Enums"]["tipo_movimiento"]
+          installment_plan_id: string | null
+          transaction_date: string
+          type: Database["public"]["Enums"]["transaction_type"]
         }
         Insert: {
-          categoria_id?: string | null
-          creado_por?: string | null
+          account_id: string
+          amount_cents: number
+          category_id?: string | null
           created_at?: string
-          cuenta_destino_id?: string | null
-          cuenta_id: string
-          descripcion?: string | null
-          diferido_id?: string | null
-          fecha?: string
-          hogar_id: string
+          created_by?: string | null
+          description?: string | null
+          destination_account_id?: string | null
+          household_id: string
           id?: string
-          monto_centavos: number
-          tipo: Database["public"]["Enums"]["tipo_movimiento"]
+          installment_plan_id?: string | null
+          transaction_date?: string
+          type: Database["public"]["Enums"]["transaction_type"]
         }
         Update: {
-          categoria_id?: string | null
-          creado_por?: string | null
+          account_id?: string
+          amount_cents?: number
+          category_id?: string | null
           created_at?: string
-          cuenta_destino_id?: string | null
-          cuenta_id?: string
-          descripcion?: string | null
-          diferido_id?: string | null
-          fecha?: string
-          hogar_id?: string
+          created_by?: string | null
+          description?: string | null
+          destination_account_id?: string | null
+          household_id?: string
           id?: string
-          monto_centavos?: number
-          tipo?: Database["public"]["Enums"]["tipo_movimiento"]
+          installment_plan_id?: string | null
+          transaction_date?: string
+          type?: Database["public"]["Enums"]["transaction_type"]
         }
         Relationships: [
           {
-            foreignKeyName: "movimientos_categoria_id_hogar_id_fkey"
-            columns: ["categoria_id", "hogar_id"]
+            foreignKeyName: "transactions_account_id_household_id_fkey"
+            columns: ["account_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "categorias"
-            referencedColumns: ["id", "hogar_id"]
+            referencedRelation: "accounts"
+            referencedColumns: ["id", "household_id"]
           },
           {
-            foreignKeyName: "movimientos_cuenta_destino_id_hogar_id_fkey"
-            columns: ["cuenta_destino_id", "hogar_id"]
+            foreignKeyName: "transactions_account_id_household_id_fkey"
+            columns: ["account_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "cuentas"
-            referencedColumns: ["id", "hogar_id"]
+            referencedRelation: "v_account_balances"
+            referencedColumns: ["account_id", "household_id"]
           },
           {
-            foreignKeyName: "movimientos_cuenta_destino_id_hogar_id_fkey"
-            columns: ["cuenta_destino_id", "hogar_id"]
+            foreignKeyName: "transactions_category_id_household_id_fkey"
+            columns: ["category_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "v_saldos_cuentas"
-            referencedColumns: ["cuenta_id", "hogar_id"]
+            referencedRelation: "categories"
+            referencedColumns: ["id", "household_id"]
           },
           {
-            foreignKeyName: "movimientos_cuenta_id_hogar_id_fkey"
-            columns: ["cuenta_id", "hogar_id"]
+            foreignKeyName: "transactions_destination_account_id_household_id_fkey"
+            columns: ["destination_account_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "cuentas"
-            referencedColumns: ["id", "hogar_id"]
+            referencedRelation: "accounts"
+            referencedColumns: ["id", "household_id"]
           },
           {
-            foreignKeyName: "movimientos_cuenta_id_hogar_id_fkey"
-            columns: ["cuenta_id", "hogar_id"]
+            foreignKeyName: "transactions_destination_account_id_household_id_fkey"
+            columns: ["destination_account_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "v_saldos_cuentas"
-            referencedColumns: ["cuenta_id", "hogar_id"]
+            referencedRelation: "v_account_balances"
+            referencedColumns: ["account_id", "household_id"]
           },
           {
-            foreignKeyName: "movimientos_diferido_id_hogar_id_fkey"
-            columns: ["diferido_id", "hogar_id"]
+            foreignKeyName: "transactions_household_id_fkey"
+            columns: ["household_id"]
             isOneToOne: false
-            referencedRelation: "diferidos"
-            referencedColumns: ["id", "hogar_id"]
-          },
-          {
-            foreignKeyName: "movimientos_diferido_id_hogar_id_fkey"
-            columns: ["diferido_id", "hogar_id"]
-            isOneToOne: false
-            referencedRelation: "v_diferidos_estado"
-            referencedColumns: ["diferido_id", "hogar_id"]
-          },
-          {
-            foreignKeyName: "movimientos_hogar_id_fkey"
-            columns: ["hogar_id"]
-            isOneToOne: false
-            referencedRelation: "hogares"
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      presupuestos: {
-        Row: {
-          categoria_id: string
-          created_at: string
-          hogar_id: string
-          id: string
-          mes: string
-          monto_centavos: number
-        }
-        Insert: {
-          categoria_id: string
-          created_at?: string
-          hogar_id: string
-          id?: string
-          mes: string
-          monto_centavos: number
-        }
-        Update: {
-          categoria_id?: string
-          created_at?: string
-          hogar_id?: string
-          id?: string
-          mes?: string
-          monto_centavos?: number
-        }
-        Relationships: [
           {
-            foreignKeyName: "presupuestos_categoria_id_hogar_id_fkey"
-            columns: ["categoria_id", "hogar_id"]
+            foreignKeyName: "transactions_installment_plan_id_household_id_fkey"
+            columns: ["installment_plan_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "categorias"
-            referencedColumns: ["id", "hogar_id"]
+            referencedRelation: "installment_plans"
+            referencedColumns: ["id", "household_id"]
           },
           {
-            foreignKeyName: "presupuestos_hogar_id_fkey"
-            columns: ["hogar_id"]
+            foreignKeyName: "transactions_installment_plan_id_household_id_fkey"
+            columns: ["installment_plan_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "hogares"
-            referencedColumns: ["id"]
+            referencedRelation: "v_installment_plan_status"
+            referencedColumns: ["installment_plan_id", "household_id"]
           },
         ]
       }
     }
     Views: {
-      v_diferidos_estado: {
+      v_account_balances: {
         Row: {
-          cuenta_id: string | null
-          cuota_estimada_centavos: number | null
-          cuotas_restantes: number | null
-          cuotas_transcurridas: number | null
-          descripcion: string | null
-          diferido_id: string | null
-          fecha_fin_estimada: string | null
-          fecha_inicio: string | null
-          hogar_id: string | null
-          interes_total_estimado_centavos: number | null
-          monto_centavos: number | null
-          numero_cuotas: number | null
-          saldo_capital_estimado_centavos: number | null
-          tasa_anual: number | null
+          account_id: string | null
+          available_credit_cents: number | null
+          balance_cents: number | null
+          credit_limit_cents: number | null
+          holder: string | null
+          household_id: string | null
+          institution: string | null
+          name: string | null
+          overlimit_cents: number | null
+          payment_due_day: number | null
+          statement_day: number | null
+          type: Database["public"]["Enums"]["account_type"] | null
         }
         Relationships: [
           {
-            foreignKeyName: "diferidos_cuenta_id_hogar_id_fkey"
-            columns: ["cuenta_id", "hogar_id"]
+            foreignKeyName: "accounts_household_id_fkey"
+            columns: ["household_id"]
             isOneToOne: false
-            referencedRelation: "cuentas"
-            referencedColumns: ["id", "hogar_id"]
-          },
-          {
-            foreignKeyName: "diferidos_cuenta_id_hogar_id_fkey"
-            columns: ["cuenta_id", "hogar_id"]
-            isOneToOne: false
-            referencedRelation: "v_saldos_cuentas"
-            referencedColumns: ["cuenta_id", "hogar_id"]
-          },
-          {
-            foreignKeyName: "diferidos_hogar_id_fkey"
-            columns: ["hogar_id"]
-            isOneToOne: false
-            referencedRelation: "hogares"
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
         ]
       }
-      v_gastos_mensuales: {
+      v_installment_plan_status: {
         Row: {
-          categoria_id: string | null
-          hogar_id: string | null
-          mes: string | null
-          tipo: Database["public"]["Enums"]["tipo_movimiento"] | null
-          total_centavos: number | null
+          account_id: string | null
+          amount_cents: number | null
+          annual_rate: number | null
+          description: string | null
+          elapsed_installments: number | null
+          estimated_end_date: string | null
+          estimated_installment_cents: number | null
+          estimated_principal_balance_cents: number | null
+          estimated_total_interest_cents: number | null
+          household_id: string | null
+          installment_count: number | null
+          installment_plan_id: string | null
+          remaining_installments: number | null
+          start_date: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "movimientos_categoria_id_hogar_id_fkey"
-            columns: ["categoria_id", "hogar_id"]
+            foreignKeyName: "installment_plans_account_id_household_id_fkey"
+            columns: ["account_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "categorias"
-            referencedColumns: ["id", "hogar_id"]
+            referencedRelation: "accounts"
+            referencedColumns: ["id", "household_id"]
           },
           {
-            foreignKeyName: "movimientos_hogar_id_fkey"
-            columns: ["hogar_id"]
+            foreignKeyName: "installment_plans_account_id_household_id_fkey"
+            columns: ["account_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "hogares"
+            referencedRelation: "v_account_balances"
+            referencedColumns: ["account_id", "household_id"]
+          },
+          {
+            foreignKeyName: "installment_plans_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
         ]
       }
-      v_saldos_cuentas: {
+      v_monthly_expenses: {
         Row: {
-          cuenta_id: string | null
-          cupo_centavos: number | null
-          cupo_disponible_centavos: number | null
-          dia_corte: number | null
-          dia_pago: number | null
-          entidad: string | null
-          hogar_id: string | null
-          nombre: string | null
-          saldo_centavos: number | null
-          sobrecupo_centavos: number | null
-          tipo: Database["public"]["Enums"]["tipo_cuenta"] | null
-          titular: string | null
+          category_id: string | null
+          household_id: string | null
+          month: string | null
+          total_cents: number | null
+          type: Database["public"]["Enums"]["transaction_type"] | null
         }
         Relationships: [
           {
-            foreignKeyName: "cuentas_hogar_id_fkey"
-            columns: ["hogar_id"]
+            foreignKeyName: "transactions_category_id_household_id_fkey"
+            columns: ["category_id", "household_id"]
             isOneToOne: false
-            referencedRelation: "hogares"
+            referencedRelation: "categories"
+            referencedColumns: ["id", "household_id"]
+          },
+          {
+            foreignKeyName: "transactions_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
         ]
       }
     }
     Functions: {
-      es_miembro: { Args: { p_hogar_id: string }; Returns: boolean }
+      is_household_member: {
+        Args: { p_household_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      rol_hogar: "propietario" | "miembro"
-      tipo_categoria: "gasto" | "ingreso"
-      tipo_cuenta:
-        | "tarjeta_credito"
-        | "prestamo"
-        | "cuenta_bancaria"
-        | "efectivo"
-      tipo_movimiento:
-        | "ingreso"
-        | "gasto"
-        | "pago"
-        | "transferencia"
-        | "interes"
-        | "comision"
-        | "ajuste"
+      account_type: "credit_card" | "loan" | "bank_account" | "cash"
+      category_type: "expense" | "income"
+      household_role: "owner" | "member"
+      transaction_type:
+        | "income"
+        | "expense"
+        | "payment"
+        | "transfer"
+        | "interest"
+        | "fee"
+        | "adjustment"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -634,22 +633,17 @@ export const Constants = {
   },
   public: {
     Enums: {
-      rol_hogar: ["propietario", "miembro"],
-      tipo_categoria: ["gasto", "ingreso"],
-      tipo_cuenta: [
-        "tarjeta_credito",
-        "prestamo",
-        "cuenta_bancaria",
-        "efectivo",
-      ],
-      tipo_movimiento: [
-        "ingreso",
-        "gasto",
-        "pago",
-        "transferencia",
-        "interes",
-        "comision",
-        "ajuste",
+      account_type: ["credit_card", "loan", "bank_account", "cash"],
+      category_type: ["expense", "income"],
+      household_role: ["owner", "member"],
+      transaction_type: [
+        "income",
+        "expense",
+        "payment",
+        "transfer",
+        "interest",
+        "fee",
+        "adjustment",
       ],
     },
   },
