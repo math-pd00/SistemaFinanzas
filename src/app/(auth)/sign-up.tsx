@@ -2,14 +2,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
+import { GroupedSection } from '@/components/ui/GroupedSection';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { Screen } from '@/components/ui/Screen';
+import { TextField } from '@/components/ui/TextField';
 import { getAuthErrorMessage } from '@/features/auth/authErrorMessages';
 import { signUpSchema, type SignUpValues } from '@/features/auth/schemas';
 import { supabase } from '@/lib/supabase';
+import { spacing } from '@/theme/spacing';
+import { typography } from '@/theme/typography';
+import { useTheme } from '@/theme/useTheme';
 
 // With email confirmation enabled signUp returns no session, so the user is told to check their inbox.
 const SignUp = () => {
+  const { colors } = useTheme();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isConfirmationPending, setIsConfirmationPending] = useState(false);
   const {
@@ -35,88 +43,85 @@ const SignUp = () => {
 
   if (isConfirmationPending) {
     return (
-      <View style={styles.container}>
-        <Text>Te enviamos un correo para confirmar tu cuenta.</Text>
-        <Link href="/sign-in" style={styles.link}>
+      <Screen title="Registro">
+        <Text style={[typography.body, { color: colors.label }]}>Te enviamos un correo para confirmar tu cuenta.</Text>
+        <Link href="/sign-in" style={[typography.body, styles.link, { color: colors.tint }]}>
           Volver a iniciar sesión
         </Link>
-      </View>
+      </Screen>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Controller
-        control={control}
-        name="email"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Correo"
-            autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-          />
-        )}
-      />
-      {errors.email ? <Text style={styles.error}>{errors.email.message}</Text> : null}
+    <Screen title="Registro">
+      <GroupedSection>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              placeholder="Correo"
+              autoCapitalize="none"
+              autoComplete="email"
+              keyboardType="email-address"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              error={errors.email?.message}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              placeholder="Contraseña"
+              autoComplete="new-password"
+              secureTextEntry
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              error={errors.password?.message}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="confirmPassword"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              placeholder="Confirmar contraseña"
+              autoComplete="new-password"
+              secureTextEntry
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              error={errors.confirmPassword?.message}
+            />
+          )}
+        />
+      </GroupedSection>
 
-      <Controller
-        control={control}
-        name="password"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Contraseña"
-            autoComplete="new-password"
-            secureTextEntry
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-          />
-        )}
-      />
-      {errors.password ? <Text style={styles.error}>{errors.password.message}</Text> : null}
+      {serverError !== null ? (
+        <Text style={[typography.footnote, styles.serverError, { color: colors.destructive }]}>{serverError}</Text>
+      ) : null}
 
-      <Controller
-        control={control}
-        name="confirmPassword"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Confirmar contraseña"
-            autoComplete="new-password"
-            secureTextEntry
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-          />
-        )}
-      />
-      {errors.confirmPassword ? <Text style={styles.error}>{errors.confirmPassword.message}</Text> : null}
-
-      {serverError !== null ? <Text style={styles.error}>{serverError}</Text> : null}
-
-      <Button
+      <PrimaryButton
         title={isSubmitting ? 'Creando cuenta…' : 'Crear cuenta'}
         onPress={handleSubmit(onSubmit)}
         disabled={isSubmitting}
       />
-      <Link href="/sign-in" style={styles.link}>
+      <Link href="/sign-in" style={[typography.body, styles.link, { color: colors.tint }]}>
         ¿Ya tienes cuenta? Inicia sesión
       </Link>
-    </View>
+    </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, gap: 12 },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12 },
-  error: { color: '#c62828' },
-  link: { marginTop: 8, textAlign: 'center', color: '#1565c0' },
+  serverError: { paddingHorizontal: spacing.lg },
+  link: { textAlign: 'center' },
 });
 
 export default SignUp;

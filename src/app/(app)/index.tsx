@@ -1,10 +1,16 @@
 import { useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { Screen } from '@/components/ui/Screen';
 import { supabase } from '@/lib/supabase';
+import { spacing } from '@/theme/spacing';
+import { typography } from '@/theme/typography';
+import { useTheme } from '@/theme/useTheme';
 
 // Placeholder until accounts/transactions land; signing out lets Stack.Protected return to sign-in.
 const Summary = () => {
+  const { colors } = useTheme();
   const [signOutError, setSignOutError] = useState<string | null>(null);
 
   const handleSignOut = async () => {
@@ -16,18 +22,17 @@ const Summary = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Resumen</Text>
-      {signOutError !== null ? <Text style={styles.error}>{signOutError}</Text> : null}
-      <Button title="Cerrar sesión" onPress={handleSignOut} />
-    </View>
+    <Screen title="Resumen">
+      {signOutError !== null ? (
+        <Text style={[typography.footnote, styles.error, { color: colors.destructive }]}>{signOutError}</Text>
+      ) : null}
+      <PrimaryButton title="Cerrar sesión" onPress={handleSignOut} isDestructive />
+    </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 },
-  title: { fontSize: 24, fontWeight: '600' },
-  error: { color: '#c62828' },
+  error: { paddingHorizontal: spacing.lg },
 });
 
 export default Summary;

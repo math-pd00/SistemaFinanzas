@@ -5,23 +5,28 @@ import { useEffect } from 'react';
 import { useSession } from '@/features/auth/useSession';
 
 // Separate from _layout.tsx because useSession must run inside SessionProvider.
-export const RootNavigator = () => {
+interface IRootNavigatorProps {
+  areFontsReady: boolean;
+}
+
+export const RootNavigator = ({ areFontsReady }: IRootNavigatorProps) => {
   const { session, isLoading } = useSession();
+  const isReady = areFontsReady && !isLoading;
 
   useEffect(() => {
-    if (!isLoading) {
+    if (isReady) {
       SplashScreen.hide();
     }
-  }, [isLoading]);
+  }, [isReady]);
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={session !== null}>
-        <Stack.Screen name="(app)/index" options={{ title: 'Resumen' }} />
+        <Stack.Screen name="(app)" />
       </Stack.Protected>
       <Stack.Protected guard={session === null}>
-        <Stack.Screen name="(auth)/sign-in" options={{ title: 'Iniciar sesión' }} />
-        <Stack.Screen name="(auth)/sign-up" options={{ title: 'Registro' }} />
+        <Stack.Screen name="(auth)/sign-in" />
+        <Stack.Screen name="(auth)/sign-up" />
       </Stack.Protected>
     </Stack>
   );

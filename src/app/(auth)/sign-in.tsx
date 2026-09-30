@@ -2,14 +2,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
+import { GroupedSection } from '@/components/ui/GroupedSection';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { Screen } from '@/components/ui/Screen';
+import { TextField } from '@/components/ui/TextField';
 import { getAuthErrorMessage } from '@/features/auth/authErrorMessages';
 import { signInSchema, type SignInValues } from '@/features/auth/schemas';
 import { supabase } from '@/lib/supabase';
+import { spacing } from '@/theme/spacing';
+import { typography } from '@/theme/typography';
+import { useTheme } from '@/theme/useTheme';
 
 // No manual redirect on success: Stack.Protected swaps screens when the session appears.
 const SignIn = () => {
+  const { colors } = useTheme();
   const [serverError, setServerError] = useState<string | null>(null);
   const {
     control,
@@ -29,61 +37,60 @@ const SignIn = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Controller
-        control={control}
-        name="email"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Correo"
-            autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-          />
-        )}
-      />
-      {errors.email ? <Text style={styles.error}>{errors.email.message}</Text> : null}
+    <Screen title="Iniciar sesión">
+      <GroupedSection>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              placeholder="Correo"
+              autoCapitalize="none"
+              autoComplete="email"
+              keyboardType="email-address"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              error={errors.email?.message}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              placeholder="Contraseña"
+              autoComplete="current-password"
+              secureTextEntry
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              error={errors.password?.message}
+            />
+          )}
+        />
+      </GroupedSection>
 
-      <Controller
-        control={control}
-        name="password"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Contraseña"
-            autoComplete="current-password"
-            secureTextEntry
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-          />
-        )}
-      />
-      {errors.password ? <Text style={styles.error}>{errors.password.message}</Text> : null}
+      {serverError !== null ? (
+        <Text style={[typography.footnote, styles.serverError, { color: colors.destructive }]}>{serverError}</Text>
+      ) : null}
 
-      {serverError !== null ? <Text style={styles.error}>{serverError}</Text> : null}
-
-      <Button
+      <PrimaryButton
         title={isSubmitting ? 'Ingresando…' : 'Iniciar sesión'}
         onPress={handleSubmit(onSubmit)}
         disabled={isSubmitting}
       />
-      <Link href="/sign-up" style={styles.link}>
+      <Link href="/sign-up" style={[typography.body, styles.link, { color: colors.tint }]}>
         ¿No tienes cuenta? Regístrate
       </Link>
-    </View>
+    </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, gap: 12 },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12 },
-  error: { color: '#c62828' },
-  link: { marginTop: 8, textAlign: 'center', color: '#1565c0' },
+  serverError: { paddingHorizontal: spacing.lg },
+  link: { textAlign: 'center' },
 });
 
 export default SignIn;
