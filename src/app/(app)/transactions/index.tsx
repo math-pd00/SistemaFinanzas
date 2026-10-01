@@ -22,16 +22,17 @@ const Transactions = () => {
   const transactions = useTransactions(household.data);
   const balances = useAccountBalances(household.data);
   const categories = useCategories(household.data);
+  const refetchAll = () => Promise.all([transactions.refetch(), balances.refetch(), categories.refetch()]);
 
   const renderBody = () => {
-    if (household.isError || transactions.isError) {
+    if (household.isError || transactions.isError || balances.isError || categories.isError) {
       return (
         <Text style={[typography.body, styles.message, { color: colors.secondaryLabel }]}>
           No se pudieron cargar los movimientos.
         </Text>
       );
     }
-    if (transactions.data === undefined) {
+    if (transactions.data === undefined || balances.data === undefined || categories.data === undefined) {
       return <ActivityIndicator />;
     }
     if (transactions.data.length === 0) {
@@ -42,8 +43,8 @@ const Transactions = () => {
       );
     }
 
-    const accountNames = new Map(balances.data?.map((account) => [account.accountId, account.name]));
-    const categoryNames = new Map(categories.data?.map((category) => [category.id, category.name]));
+    const accountNames = new Map(balances.data.map((account) => [account.accountId, account.name]));
+    const categoryNames = new Map(categories.data.map((category) => [category.id, category.name]));
 
     return (
       <GroupedSection>
@@ -88,7 +89,7 @@ const Transactions = () => {
       }
       refreshControl={
         household.data === undefined ? undefined : (
-          <RefreshControl refreshing={transactions.isRefetching} onRefresh={transactions.refetch} />
+          <RefreshControl refreshing={transactions.isRefetching} onRefresh={refetchAll} />
         )
       }
     >
