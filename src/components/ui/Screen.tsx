@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from 'react';
-import { ScrollView, StyleSheet, Text, type RefreshControlProps } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, type RefreshControlProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { spacing } from '@/theme/spacing';
@@ -11,9 +11,10 @@ interface IScreenProps {
   title: string;
   children?: ReactNode;
   refreshControl?: ReactElement<RefreshControlProps>;
+  headerRight?: ReactNode;
 }
 
-export const Screen = ({ title, children, refreshControl }: IScreenProps) => {
+export const Screen = ({ title, children, refreshControl, headerRight }: IScreenProps) => {
   const { colors } = useTheme();
 
   return (
@@ -27,9 +28,12 @@ export const Screen = ({ title, children, refreshControl }: IScreenProps) => {
         automaticallyAdjustKeyboardInsets
         refreshControl={refreshControl}
       >
-        <Text accessibilityRole="header" style={[typography.largeTitle, styles.title, { color: colors.label }]}>
-          {title}
-        </Text>
+        <View style={styles.titleRow}>
+          <Text accessibilityRole="header" style={[typography.largeTitle, styles.title, { color: colors.label }]}>
+            {title}
+          </Text>
+          {headerRight}
+        </View>
         {children}
       </ScrollView>
     </SafeAreaView>
@@ -39,5 +43,6 @@ export const Screen = ({ title, children, refreshControl }: IScreenProps) => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   content: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xxl, gap: spacing.xl },
-  title: { marginTop: spacing.sm },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginTop: spacing.sm },
+  title: { flex: 1 },
 });

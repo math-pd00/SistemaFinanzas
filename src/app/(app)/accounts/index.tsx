@@ -1,4 +1,6 @@
-import { ActivityIndicator, RefreshControl, StyleSheet, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, Text } from 'react-native';
 
 import { AmountText } from '@/components/ui/AmountText';
 import { GroupedSection } from '@/components/ui/GroupedSection';
@@ -75,6 +77,16 @@ const Accounts = () => {
   return (
     <Screen
       title="Cuentas"
+      headerRight={
+        <Pressable
+          onPress={() => router.push('/accounts/new')}
+          accessibilityRole="button"
+          accessibilityLabel="Agregar cuenta"
+          hitSlop={12}
+        >
+          <Ionicons name="add" size={28} color={colors.tint} />
+        </Pressable>
+      }
       refreshControl={
         household.data === undefined ? undefined : (
           <RefreshControl refreshing={balances.isRefetching} onRefresh={balances.refetch} />
