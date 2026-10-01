@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import type { ReactElement, ReactNode } from 'react';
+import { ScrollView, StyleSheet, Text, type RefreshControlProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { spacing } from '@/theme/spacing';
@@ -10,9 +10,10 @@ import { useTheme } from '@/theme/useTheme';
 interface IScreenProps {
   title: string;
   children?: ReactNode;
+  refreshControl?: ReactElement<RefreshControlProps>;
 }
 
-export const Screen = ({ title, children }: IScreenProps) => {
+export const Screen = ({ title, children, refreshControl }: IScreenProps) => {
   const { colors } = useTheme();
 
   return (
@@ -24,6 +25,7 @@ export const Screen = ({ title, children }: IScreenProps) => {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
+        refreshControl={refreshControl}
       >
         <Text accessibilityRole="header" style={[typography.largeTitle, styles.title, { color: colors.label }]}>
           {title}
