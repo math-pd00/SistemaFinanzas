@@ -6,12 +6,15 @@ import { supabase } from '@/lib/supabase';
 import type { Enums } from '@/types/database.types';
 import { toLocalIsoDate } from '@/utils/date';
 
+export type TransactionEntryType = Exclude<Enums<'transaction_type'>, 'adjustment'>;
+
 // Registering a movement changes both the recent list and the account balances, so both are refetched.
 interface ICreateTransactionVariables {
   householdId: string;
-  type: Extract<Enums<'transaction_type'>, 'expense' | 'income'>;
+  type: TransactionEntryType;
   accountId: string;
-  categoryId: string;
+  destinationAccountId: string | null;
+  categoryId: string | null;
   amountCents: number;
   description: string | null;
 }
@@ -25,6 +28,7 @@ export const useCreateTransaction = () => {
         household_id: variables.householdId,
         type: variables.type,
         account_id: variables.accountId,
+        destination_account_id: variables.destinationAccountId,
         category_id: variables.categoryId,
         amount_cents: variables.amountCents,
         description: variables.description,
