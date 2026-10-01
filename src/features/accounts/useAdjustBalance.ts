@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { accountBalancesQueryKey } from '@/features/accounts/useAccountBalances';
 import { supabase } from '@/lib/supabase';
+import { toLocalIsoDate } from '@/utils/date';
 
 // The balance is re-read right before inserting so the delta is computed against the latest server value.
 interface IAdjustBalanceVariables {
@@ -38,6 +39,7 @@ export const useAdjustBalance = () => {
         type: 'adjustment',
         amount_cents: deltaCents,
         description: 'Ajuste de saldo',
+        transaction_date: toLocalIsoDate(new Date()),
       });
       if (insertError) {
         throw insertError;

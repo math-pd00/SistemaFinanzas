@@ -6,16 +6,18 @@ import { spacing } from '@/theme/spacing';
 import { typography } from '@/theme/typography';
 import { useTheme } from '@/theme/useTheme';
 
-// A chevron appears only when the row is pressable, matching iOS disclosure rows.
+// A pressable row shows a disclosure chevron by default, matching iOS; 'checkmark' marks a selected option.
 interface IListRowProps {
   title: string;
   subtitle?: string;
   trailing?: ReactNode;
   onPress?: () => void;
+  accessory?: 'disclosure' | 'checkmark' | 'none';
 }
 
-export const ListRow = ({ title, subtitle, trailing, onPress }: IListRowProps) => {
+export const ListRow = ({ title, subtitle, trailing, onPress, accessory }: IListRowProps) => {
   const { colors } = useTheme();
+  const resolvedAccessory = accessory ?? (onPress ? 'disclosure' : 'none');
 
   return (
     <Pressable
@@ -35,7 +37,10 @@ export const ListRow = ({ title, subtitle, trailing, onPress }: IListRowProps) =
         ) : null}
       </View>
       {trailing}
-      {onPress ? <Ionicons name="chevron-forward" size={18} color={colors.secondaryLabel} /> : null}
+      {resolvedAccessory === 'disclosure' ? (
+        <Ionicons name="chevron-forward" size={18} color={colors.secondaryLabel} />
+      ) : null}
+      {resolvedAccessory === 'checkmark' ? <Ionicons name="checkmark" size={20} color={colors.tint} /> : null}
     </Pressable>
   );
 };

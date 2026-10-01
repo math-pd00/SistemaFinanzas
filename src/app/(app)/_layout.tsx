@@ -26,6 +26,13 @@ const AppLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="transactions"
+        options={{
+          title: 'Movimientos',
+          tabBarIcon: ({ color, size }) => <Ionicons name="receipt-outline" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
         name="accounts"
         options={{
           title: 'Cuentas',
