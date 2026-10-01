@@ -45,14 +45,25 @@ const Transactions = () => {
 
     const accountNames = new Map(balances.data.map((account) => [account.accountId, account.name]));
     const categoryNames = new Map(categories.data.map((category) => [category.id, category.name]));
+    const getAccountName = (accountId: string | null) =>
+      accountId === null ? undefined : accountNames.get(accountId);
 
     return (
       <GroupedSection>
         {transactions.data.map((transaction) => {
           const display = toDisplayAmount(transaction.type, transaction.amountCents);
+          const title =
+            (transaction.categoryId === null ? undefined : categoryNames.get(transaction.categoryId)) ??
+            transactionTypeLabels[transaction.type];
+          const accountLabel = [
+            getAccountName(transaction.accountId),
+            getAccountName(transaction.destinationAccountId),
+          ]
+            .filter((name) => name)
+            .join(' → ');
           const subtitle = [
-            transaction.description,
-            accountNames.get(transaction.accountId),
+            transaction.description === title ? null : transaction.description,
+            accountLabel,
             formatIsoDate(transaction.transactionDate),
           ]
             .filter((part) => part)
@@ -61,10 +72,7 @@ const Transactions = () => {
           return (
             <ListRow
               key={transaction.id}
-              title={
-                (transaction.categoryId === null ? undefined : categoryNames.get(transaction.categoryId)) ??
-                transactionTypeLabels[transaction.type]
-              }
+              title={title}
               subtitle={subtitle}
               trailing={<AmountText cents={display.cents} tone={display.tone} />}
             />

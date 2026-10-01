@@ -31,7 +31,7 @@ export const ListRow = ({ title, subtitle, trailing, onPress, accessory }: IList
           {title}
         </Text>
         {subtitle ? (
-          <Text numberOfLines={1} style={[typography.subheadline, { color: colors.secondaryLabel }]}>
+          <Text numberOfLines={2} style={[typography.subheadline, { color: colors.secondaryLabel }]}>
             {subtitle}
           </Text>
         ) : null}

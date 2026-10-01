@@ -4,12 +4,14 @@ import { supabase } from '@/lib/supabase';
 import type { Enums, Tables } from '@/types/database.types';
 
 const RECENT_LIMIT = 50;
-const TRANSACTION_COLUMNS = 'id, type, account_id, category_id, amount_cents, transaction_date, description';
+const TRANSACTION_COLUMNS =
+  'id, type, account_id, destination_account_id, category_id, amount_cents, transaction_date, description';
 
 export interface ITransaction {
   id: string;
   type: Enums<'transaction_type'>;
   accountId: string;
+  destinationAccountId: string | null;
   categoryId: string | null;
   amountCents: number;
   transactionDate: string;
@@ -18,7 +20,14 @@ export interface ITransaction {
 
 export type TransactionRow = Pick<
   Tables<'transactions'>,
-  'id' | 'type' | 'account_id' | 'category_id' | 'amount_cents' | 'transaction_date' | 'description'
+  | 'id'
+  | 'type'
+  | 'account_id'
+  | 'destination_account_id'
+  | 'category_id'
+  | 'amount_cents'
+  | 'transaction_date'
+  | 'description'
 >;
 
 export const transactionsQueryKey = (householdId: string | undefined) => ['transactions', householdId];
@@ -27,6 +36,7 @@ export const toTransaction = (row: TransactionRow): ITransaction => ({
   id: row.id,
   type: row.type,
   accountId: row.account_id,
+  destinationAccountId: row.destination_account_id,
   categoryId: row.category_id,
   amountCents: row.amount_cents,
   transactionDate: row.transaction_date,
