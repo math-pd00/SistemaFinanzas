@@ -8,8 +8,13 @@ const completeRow: AccountBalanceRow = {
   name: 'Visa',
   type: 'credit_card',
   institution: 'Banco Pichincha',
+  holder: 'Ana',
   balance_cents: 12345,
   available_credit_cents: 87655,
+  credit_limit_cents: 100000,
+  overlimit_cents: 0,
+  statement_day: 15,
+  payment_due_day: 5,
 };
 
 describe('toAccountBalance', () => {
@@ -19,8 +24,13 @@ describe('toAccountBalance', () => {
       name: 'Visa',
       type: 'credit_card',
       institution: 'Banco Pichincha',
+      holder: 'Ana',
       balanceCents: 12345,
       availableCreditCents: 87655,
+      creditLimitCents: 100000,
+      overlimitCents: 0,
+      statementDay: 15,
+      paymentDueDay: 5,
     });
   });
 
@@ -29,6 +39,7 @@ describe('toAccountBalance', () => {
     ['name', { ...completeRow, name: null }],
     ['type', { ...completeRow, type: null }],
     ['balance_cents', { ...completeRow, balance_cents: null }],
+    ['overlimit_cents', { ...completeRow, overlimit_cents: null }],
   ])('returns null when %s is null', (_field, row) => {
     expect(toAccountBalance(row)).toBeNull();
   });

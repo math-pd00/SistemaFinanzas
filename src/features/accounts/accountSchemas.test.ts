@@ -1,5 +1,11 @@
 import type { Enums } from '../../types/database.types';
-import { accountFormSchema, toAccountInsert, type AccountFormInput, type AccountFormValues } from './accountSchemas';
+import {
+  accountFormSchema,
+  adjustBalanceSchema,
+  toAccountInsert,
+  type AccountFormInput,
+  type AccountFormValues,
+} from './accountSchemas';
 
 // Every field is a string in the form, so each case starts from an all-empty input.
 const emptyInput: AccountFormInput = {
@@ -120,5 +126,20 @@ describe('toAccountInsert', () => {
     const insert = toAccountInsert({ ...fullValues, overlimit: null, annualRate: null }, 'credit_card', 'household-1');
     expect(insert).not.toHaveProperty('overlimit_cents');
     expect(insert).not.toHaveProperty('annual_rate');
+  });
+});
+
+describe('adjustBalanceSchema', () => {
+  it.each([
+    ['1600', 160000],
+    ['1600,50', 160050],
+  ])('parses %p to %p cents', (targetBalance, expected) => {
+    expect(adjustBalanceSchema.safeParse({ targetBalance }).data?.targetBalance).toBe(expected);
+  });
+
+  it.each(['', '1,600', '-5'])('rejects %p', (targetBalance) => {
+    const result = adjustBalanceSchema.safeParse({ targetBalance });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(['targetBalance']);
   });
 });

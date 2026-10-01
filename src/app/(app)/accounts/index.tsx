@@ -7,16 +7,12 @@ import { GroupedSection } from '@/components/ui/GroupedSection';
 import { ListRow } from '@/components/ui/ListRow';
 import { Screen } from '@/components/ui/Screen';
 import { accountTypeLabels } from '@/features/accounts/accountTypeLabels';
-import { useAccountBalances, type IAccountBalance } from '@/features/accounts/useAccountBalances';
+import { isDebt, useAccountBalances, type IAccountBalance } from '@/features/accounts/useAccountBalances';
 import { useHousehold } from '@/features/household/useHousehold';
 import { typography } from '@/theme/typography';
 import { useTheme } from '@/theme/useTheme';
 import { Constants } from '@/types/database.types';
 import { formatCents } from '@/utils/money';
-
-// Credit cards and loans store debt as a positive balance, so positive values render as destructive.
-const isDebt = (account: IAccountBalance): boolean =>
-  (account.type === 'credit_card' || account.type === 'loan') && account.balanceCents > 0;
 
 const buildSubtitle = (account: IAccountBalance): string | undefined => {
   const parts: string[] = [];
@@ -67,6 +63,9 @@ const Accounts = () => {
               title={account.name}
               subtitle={buildSubtitle(account)}
               trailing={<AmountText cents={account.balanceCents} tone={isDebt(account) ? 'destructive' : 'label'} />}
+              onPress={() =>
+                router.push({ pathname: '/accounts/[accountId]', params: { accountId: account.accountId } })
+              }
             />
           ))}
         </GroupedSection>

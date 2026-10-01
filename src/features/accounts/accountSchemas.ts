@@ -80,6 +80,25 @@ export const accountFormSchema = z.object({
 export type AccountFormInput = z.input<typeof accountFormSchema>;
 export type AccountFormValues = z.output<typeof accountFormSchema>;
 
+export const adjustBalanceSchema = z.object({
+  targetBalance: z
+    .string()
+    .trim()
+    .min(1, 'Ingresa el saldo.')
+    .transform((value, context) => {
+      const cents = parseAmountToCents(value);
+      if (cents === null || cents < 0) {
+        context.addIssue({ code: 'custom', message: AMOUNT_ERROR });
+        return z.NEVER;
+      }
+
+      return cents;
+    }),
+});
+
+export type AdjustBalanceInput = z.input<typeof adjustBalanceSchema>;
+export type AdjustBalanceValues = z.output<typeof adjustBalanceSchema>;
+
 export const toAccountInsert = (
   values: AccountFormValues,
   type: Enums<'account_type'>,
