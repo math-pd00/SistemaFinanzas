@@ -20,11 +20,16 @@ const RootLayout = () => {
     [fontFamily.semibold]: Inter_600SemiBold,
     [fontFamily.bold]: Inter_700Bold,
   });
+  const areFontsReady = fontsLoaded || fontError !== null;
+
+  if (!areFontsReady) {
+    return null;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
-        <RootNavigator areFontsReady={fontsLoaded || fontError !== null} />
+        <RootNavigator />
       </SessionProvider>
     </QueryClientProvider>
   );
