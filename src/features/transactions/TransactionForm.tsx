@@ -1,7 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import DateTimePicker, {
+  DateTimePickerAndroid,
+  type DateTimePickerChangeEvent,
+} from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet, Text } from 'react-native';
+import { Platform, StyleSheet, Text } from 'react-native';
 
 import { GroupedSection } from '@/components/ui/GroupedSection';
 import { ListRow } from '@/components/ui/ListRow';
@@ -20,6 +25,7 @@ import { spacing } from '@/theme/spacing';
 import { typography } from '@/theme/typography';
 import { useTheme } from '@/theme/useTheme';
 import { Constants, type Enums } from '@/types/database.types';
+import { formatIsoDate, toLocalIsoDate } from '@/utils/date';
 
 // Money leaves bank or cash accounts toward cards and loans; interest only accrues on debt accounts.
 type AccountType = Enums<'account_type'>;
@@ -59,6 +65,8 @@ export const TransactionForm = ({ type }: ITransactionFormProps) => {
   const balances = useAccountBalances(household.data);
   const categories = useCategories(household.data);
   const createTransaction = useCreateTransaction();
+  const [today] = useState(() => new Date());
+  const [transactionDate, setTransactionDate] = useState(today);
   const rules = ENTRY_RULES[type];
   const hasDestination = rules.destinationTypes !== null;
   const {
@@ -96,10 +104,22 @@ export const TransactionForm = ({ type }: ITransactionFormProps) => {
         categoryId: values.categoryId,
         amountCents: values.amount,
         description: values.description,
+        transactionDate: toLocalIsoDate(transactionDate),
       },
       { onSuccess: () => router.back() },
     );
   };
+
+  const selectTransactionDate = (_event: DateTimePickerChangeEvent, selectedDate: Date) =>
+    setTransactionDate(selectedDate);
+
+  const openAndroidDatePicker = () =>
+    DateTimePickerAndroid.open({
+      value: transactionDate,
+      mode: 'date',
+      maximumDate: today,
+      onValueChange: selectTransactionDate,
+    });
 
   const renderSelection = (name: SelectionField, header: string, options: ISelectionOption[]) => {
     const errorMessage = errors[name]?.message;
@@ -133,7 +153,7 @@ export const TransactionForm = ({ type }: ITransactionFormProps) => {
 
   return (
     <>
-      <GroupedSection footer="Fecha: hoy">
+      <GroupedSection>
         <Controller
           control={control}
           name="amount"
@@ -163,6 +183,30 @@ export const TransactionForm = ({ type }: ITransactionFormProps) => {
             />
           )}
         />
+        {Platform.OS === 'android' ? (
+          <ListRow
+            title="Fecha"
+            trailing={
+              <Text style={[typography.body, { color: colors.secondaryLabel }]}>
+                {formatIsoDate(toLocalIsoDate(transactionDate))}
+              </Text>
+            }
+            onPress={openAndroidDatePicker}
+          />
+        ) : (
+          <ListRow
+            title="Fecha"
+            trailing={
+              <DateTimePicker
+                value={transactionDate}
+                mode="date"
+                display="compact"
+                maximumDate={today}
+                onValueChange={selectTransactionDate}
+              />
+            }
+          />
+        )}
       </GroupedSection>
 
       {renderSelection('accountId', hasDestination ? 'Desde' : 'Cuenta', toAccountOptions(rules.originTypes))}

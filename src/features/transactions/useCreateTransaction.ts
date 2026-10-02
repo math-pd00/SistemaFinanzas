@@ -4,7 +4,6 @@ import { accountBalancesQueryKey } from '@/features/accounts/useAccountBalances'
 import { transactionsQueryKey } from '@/features/transactions/useTransactions';
 import { supabase } from '@/lib/supabase';
 import type { Enums } from '@/types/database.types';
-import { toLocalIsoDate } from '@/utils/date';
 
 export type TransactionEntryType = Exclude<Enums<'transaction_type'>, 'adjustment'>;
 
@@ -17,6 +16,7 @@ interface ICreateTransactionVariables {
   categoryId: string | null;
   amountCents: number;
   description: string | null;
+  transactionDate: string;
 }
 
 export const useCreateTransaction = () => {
@@ -32,7 +32,7 @@ export const useCreateTransaction = () => {
         category_id: variables.categoryId,
         amount_cents: variables.amountCents,
         description: variables.description,
-        transaction_date: toLocalIsoDate(new Date()),
+        transaction_date: variables.transactionDate,
       });
       if (error) {
         throw error;
