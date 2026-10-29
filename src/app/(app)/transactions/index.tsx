@@ -22,7 +22,9 @@ const Transactions = () => {
   const transactions = useTransactions(household.data);
   const balances = useAccountBalances(household.data);
   const categories = useCategories(household.data);
-  const refetchAll = () => Promise.all([transactions.refetch(), balances.refetch(), categories.refetch()]);
+  const refetchAll = async () => {
+    await Promise.all([transactions.refetch(), balances.refetch(), categories.refetch()]);
+  };
 
   const renderBody = () => {
     if (household.isError || transactions.isError || balances.isError || categories.isError) {

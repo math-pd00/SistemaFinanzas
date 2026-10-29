@@ -7,6 +7,7 @@ import { useTheme } from '@/theme/useTheme';
 // Headers are hidden because every screen draws its own large title.
 const AppLayout = () => {
   const { colors } = useTheme();
+  const tabIconColor = (focused: boolean) => (focused ? colors.tint : colors.secondaryLabel);
 
   return (
     <Tabs
@@ -22,21 +23,21 @@ const AppLayout = () => {
         name="index"
         options={{
           title: 'Resumen',
-          tabBarIcon: ({ color, size }) => <Ionicons name="pie-chart-outline" color={color} size={size} />,
+          tabBarIcon: ({ focused, size }) => <Ionicons name="pie-chart-outline" color={tabIconColor(focused)} size={size} />,
         }}
       />
       <Tabs.Screen
         name="transactions"
         options={{
           title: 'Movimientos',
-          tabBarIcon: ({ color, size }) => <Ionicons name="receipt-outline" color={color} size={size} />,
+          tabBarIcon: ({ focused, size }) => <Ionicons name="receipt-outline" color={tabIconColor(focused)} size={size} />,
         }}
       />
       <Tabs.Screen
         name="accounts"
         options={{
           title: 'Cuentas',
-          tabBarIcon: ({ color, size }) => <Ionicons name="wallet-outline" color={color} size={size} />,
+          tabBarIcon: ({ focused, size }) => <Ionicons name="wallet-outline" color={tabIconColor(focused)} size={size} />,
         }}
       />
     </Tabs>

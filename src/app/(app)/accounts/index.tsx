@@ -31,6 +31,9 @@ const Accounts = () => {
   const household = useHousehold();
   const balances = useAccountBalances(household.data);
   const accounts = balances.data;
+  const refetchBalances = async () => {
+    await balances.refetch();
+  };
 
   const renderBody = () => {
     if (household.isError || balances.isError) {
@@ -88,7 +91,7 @@ const Accounts = () => {
       }
       refreshControl={
         household.data === undefined ? undefined : (
-          <RefreshControl refreshing={balances.isRefetching} onRefresh={balances.refetch} />
+          <RefreshControl refreshing={balances.isRefetching} onRefresh={refetchBalances} />
         )
       }
     >
