@@ -75,6 +75,9 @@ const Transactions = () => {
               title={title}
               subtitle={subtitle}
               trailing={<AmountText cents={display.cents} tone={display.tone} />}
+              onPress={() =>
+                router.push({ pathname: '/transactions/[transactionId]', params: { transactionId: transaction.id } })
+              }
             />
           );
         })}
