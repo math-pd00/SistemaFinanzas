@@ -1,5 +1,13 @@
 import type { ReactElement, ReactNode } from 'react';
-import { ScrollView, StyleSheet, Text, View, type RefreshControlProps } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type RefreshControlProps,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { spacing } from '@/theme/spacing';
@@ -22,26 +30,32 @@ export const Screen = ({ title, children, refreshControl, headerRight }: IScreen
       edges={['top', 'left', 'right']}
       style={[styles.safeArea, { backgroundColor: colors.background }]}
     >
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
-        refreshControl={refreshControl}
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'android' ? 'padding' : undefined}
       >
-        <View style={styles.titleRow}>
-          <Text accessibilityRole="header" style={[typography.largeTitle, styles.title, { color: colors.label }]}>
-            {title}
-          </Text>
-          {headerRight}
-        </View>
-        {children}
-      </ScrollView>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets
+          refreshControl={refreshControl}
+        >
+          <View style={styles.titleRow}>
+            <Text accessibilityRole="header" style={[typography.largeTitle, styles.title, { color: colors.label }]}>
+              {title}
+            </Text>
+            {headerRight}
+          </View>
+          {children}
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
+  keyboardAvoidingView: { flex: 1 },
   content: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xxl, gap: spacing.xl },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginTop: spacing.sm },
   title: { flex: 1 },
